@@ -1,7 +1,9 @@
 import React from "react";
-
-const Page = () => {
-  return <div>page</div>;
-};
-
-export default Page;
+import SignUp from "@/screens/auth/SignUp";
+export default function Page() {
+  return (
+    <div>
+      <SignUp />
+    </div>
+  );
+}
