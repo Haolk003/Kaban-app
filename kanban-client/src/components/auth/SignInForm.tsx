@@ -1,16 +1,21 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Form } from "radix-ui";
+
 import { yupResolver } from "@hookform/resolvers/yup";
-import InputAuth from "../ui/InputAuth";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import ButtonAuth from "../ui/ButtonAuth";
+import InputAuth from "../ui/InputAuth";
 import { SignInFormValue, signInSchema } from "@/validations/signInValidation";
+import { useMutation } from "@apollo/client";
+import { LOGIN } from "@/graphql/actions/login.action";
 import Link from "next/link";
+import LoadingUI from "../ui/LoadingUI";
 
 const SignInForm = () => {
+  const [handleLogin, { data, loading, error }] = useMutation(LOGIN);
   const {
     register,
     handleSubmit,
@@ -19,9 +24,24 @@ const SignInForm = () => {
     resolver: yupResolver(signInSchema),
   });
 
-  const onSubmit: SubmitHandler<SignInFormValue> = (data) => {
+  const onSubmit: SubmitHandler<SignInFormValue> = async (data) => {
+    await handleLogin({
+      variables: {
+        email: data.email,
+        password: data.password,
+      },
+    });
     console.log("Form Data:", data);
   };
+
+  useEffect(() => {
+    if (data && data.login && !data.login.error) {
+      console.log("Login Success");
+    }
+    if (error) {
+      console.log(error);
+    }
+  }, [error, data]);
   return (
     <div>
       <Form.Root
@@ -47,7 +67,7 @@ const SignInForm = () => {
         </div>
 
         <div className="mt-2">
-          <ButtonAuth type="submit" title="Create account" />
+          <ButtonAuth type="submit" title="Sign In" />
         </div>
       </Form.Root>
 
@@ -57,6 +77,7 @@ const SignInForm = () => {
           Sign Up
         </Link>{" "}
       </p>
+      {loading && <LoadingUI />}
     </div>
   );
 };

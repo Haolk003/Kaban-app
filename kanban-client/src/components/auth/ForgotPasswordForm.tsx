@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+
 import { useForm } from "react-hook-form";
 import {
   ForgotPasswordFormValue,
@@ -8,7 +9,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Form } from "radix-ui";
 import InputAuth from "../ui/InputAuth";
 import ButtonAuth from "../ui/ButtonAuth";
+
+import { useMutation } from "@apollo/client";
+import { FORGOT_PASSWORD } from "@/graphql/actions/forgotPassword.action";
+import LoadingUI from "../ui/LoadingUI";
+
 const ForgotPasswordForm = () => {
+  const [forgotPassword, { data, loading, error }] =
+    useMutation(FORGOT_PASSWORD);
   const {
     register,
     handleSubmit,
@@ -18,8 +26,21 @@ const ForgotPasswordForm = () => {
   });
 
   const onSubmit = (data: ForgotPasswordFormValue) => {
-    console.log("Form Data:", data);
+    forgotPassword({
+      variables: {
+        email: data.email,
+      },
+    });
   };
+
+  useEffect(() => {
+    if (data && data.forgotPassword && !data.forgotPassword.error) {
+      console.log("Forgot Password Success");
+    }
+    if (error) {
+      console.log(error);
+    }
+  }, [data, error]);
 
   return (
     <>
@@ -38,6 +59,7 @@ const ForgotPasswordForm = () => {
           <ButtonAuth title="Submit" type="submit" />
         </div>
       </Form.Root>
+      {loading && <LoadingUI />}
     </>
   );
 };

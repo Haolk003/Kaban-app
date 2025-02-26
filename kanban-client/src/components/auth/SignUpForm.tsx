@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Form } from "radix-ui";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputAuth from "../ui/InputAuth";
@@ -16,7 +17,10 @@ import Link from "next/link";
 import { useMutation } from "@apollo/client";
 import { REGISTER } from "@/graphql/actions/register.action";
 
+import LoadingUI from "../ui/LoadingUI";
+
 const SignUpForm = () => {
+  const router = useRouter();
   const [handleRegister, { data, loading, error }] = useMutation(REGISTER);
   const {
     register,
@@ -39,8 +43,8 @@ const SignUpForm = () => {
   };
 
   useEffect(() => {
-    if (data) {
-      console.log(data);
+    if (data && data.registerUser && !data.registerUser.error) {
+      router.push(`/two-step-verification?token=${data.registerUser.token}`);
     }
     if (error) {
       console.log(error);
@@ -99,6 +103,7 @@ const SignUpForm = () => {
           Sign In
         </Link>
       </p>
+      {loading && <LoadingUI />}
     </div>
   );
 };

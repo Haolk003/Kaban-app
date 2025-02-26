@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "radix-ui";
 import InputAuth from "@/components/ui/InputAuth";
@@ -9,7 +9,16 @@ import {
   ResetPasswordFormValue,
 } from "@/validations/resetPasswordValidation";
 
+import { useRouter, useSearchParams } from "next/navigation";
+import { useMutation } from "@apollo/client";
+
+import { RESET_PASSWORD } from "@/graphql/actions/resetPassword.action";
+import { showToast } from "../ui/Toast";
+
 const ResetPasswordForm = () => {
+  const [resetPassword, { data, loading, error }] = useMutation(RESET_PASSWORD);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const {
     register,
     handleSubmit,
@@ -18,9 +27,28 @@ const ResetPasswordForm = () => {
     resolver: yupResolver(resetPasswordSchema),
   });
 
-  const onSubmit = (data: ResetPasswordFormValue) => {
+  const onSubmit = async (data: ResetPasswordFormValue) => {
     console.log("Form Data:", data);
+    const token = searchParams.get("token");
+    const email = searchParams.get("email");
+    await resetPassword({
+      variables: {
+        email: email,
+        password: data.password,
+        token: token,
+      },
+    });
   };
+
+  useEffect(() => {
+    if (data && data.resetPassword) {
+      console.log(data);
+      router.push("/sign-in");
+    }
+    if (error) {
+      showToast("error", error.message);
+    }
+  }, [data, error]);
 
   return (
     <Form.Root
