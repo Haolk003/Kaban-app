@@ -15,7 +15,7 @@ import ButtonAuth from "../ui/ButtonAuth";
 import Link from "next/link";
 
 import { useMutation } from "@apollo/client";
-import { REGISTER } from "@/graphql/actions/register.action";
+import { REGISTER } from "@/lib/graphql/actions/register.action";
 
 import LoadingUI from "../ui/LoadingUI";
 
@@ -44,7 +44,9 @@ const SignUpForm = () => {
 
   useEffect(() => {
     if (data && data.registerUser && !data.registerUser.error) {
-      router.push(`/two-step-verification?token=${data.registerUser.token}`);
+      router.push(
+        `/auth/two-step-verification?token=${data.registerUser.token}`
+      );
     }
     if (error) {
       console.log(error);

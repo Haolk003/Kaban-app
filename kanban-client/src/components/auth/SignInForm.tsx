@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react";
 import { Form } from "radix-ui";
+import { useRouter } from "next/navigation";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -10,11 +11,13 @@ import ButtonAuth from "../ui/ButtonAuth";
 import InputAuth from "../ui/InputAuth";
 import { SignInFormValue, signInSchema } from "@/validations/signInValidation";
 import { useMutation } from "@apollo/client";
-import { LOGIN } from "@/graphql/actions/login.action";
+import { LOGIN } from "@/lib/graphql/actions/login.action";
 import Link from "next/link";
 import LoadingUI from "../ui/LoadingUI";
+import { showToast } from "../ui/Toast";
 
 const SignInForm = () => {
+  const router = useRouter();
   const [handleLogin, { data, loading, error }] = useMutation(LOGIN);
   const {
     register,
@@ -36,10 +39,11 @@ const SignInForm = () => {
 
   useEffect(() => {
     if (data && data.login && !data.login.error) {
+      router.push("/");
       console.log("Login Success");
     }
     if (error) {
-      console.log(error);
+      showToast("error", error.message);
     }
   }, [error, data]);
   return (

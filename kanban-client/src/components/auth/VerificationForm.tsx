@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ButtonAuth from "../ui/ButtonAuth";
 import { useMutation } from "@apollo/client";
-import { VERIFY_USER } from "@/graphql/actions/verifyUser.action";
+import { VERIFY_USER } from "@/lib/graphql/actions/verifyUser.action";
 
 import { isEmpty } from "lodash";
 import { showToast } from "../ui/Toast";
@@ -74,7 +74,7 @@ const VerificationForm = () => {
   useEffect(() => {
     if (data && data.activateUser && !data.activateUser.error) {
       showToast("success", "Account activated successfully");
-      router.push("/sign-in");
+      router.push("/auth/sign-in");
     }
     if (error) {
       setIsErrorVerifyNumber(true);

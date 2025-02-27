@@ -11,7 +11,7 @@ import InputAuth from "../ui/InputAuth";
 import ButtonAuth from "../ui/ButtonAuth";
 
 import { useMutation } from "@apollo/client";
-import { FORGOT_PASSWORD } from "@/graphql/actions/forgotPassword.action";
+import { FORGOT_PASSWORD } from "@/lib/graphql/actions/forgotPassword.action";
 import LoadingUI from "../ui/LoadingUI";
 
 const ForgotPasswordForm = () => {

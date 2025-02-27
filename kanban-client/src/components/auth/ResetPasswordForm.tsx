@@ -12,8 +12,9 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation } from "@apollo/client";
 
-import { RESET_PASSWORD } from "@/graphql/actions/resetPassword.action";
+import { RESET_PASSWORD } from "@/lib/graphql/actions/resetPassword.action";
 import { showToast } from "../ui/Toast";
+import LoadingUI from "../ui/LoadingUI";
 
 const ResetPasswordForm = () => {
   const [resetPassword, { data, loading, error }] = useMutation(RESET_PASSWORD);
@@ -43,7 +44,7 @@ const ResetPasswordForm = () => {
   useEffect(() => {
     if (data && data.resetPassword) {
       console.log(data);
-      router.push("/sign-in");
+      router.push("/auth/sign-in");
     }
     if (error) {
       showToast("error", error.message);
@@ -73,6 +74,7 @@ const ResetPasswordForm = () => {
       <div className="mt-4">
         <ButtonAuth title="Submit" type="submit" />
       </div>
+      {loading && <LoadingUI />}
     </Form.Root>
   );
 };
