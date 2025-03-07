@@ -1,6 +1,6 @@
-import "./globals.css";
+import React from "react";
 
-export default function Loading() {
+const LoadingUI = () => {
   return (
     <div className="relative">
       <div className="fixed top-0 left-0 w-screen h-screen z-[999] flex items-center justify-center bg-black/50">
@@ -8,4 +8,6 @@ export default function Loading() {
       </div>
     </div>
   );
-}
+};
+
+export default LoadingUI;
