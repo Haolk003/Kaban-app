@@ -10,6 +10,9 @@ import {
   greenDark,
   redDark,
   irisDark,
+  cyan,
+  violet,
+  slate,
 } from "@radix-ui/colors";
 export default {
   content: [
@@ -33,6 +36,12 @@ export default {
         ...redDark,
         ...irisDark,
         ...greenDark,
+        ...cyan,
+        ...violet,
+        ...slate,
+      },
+      height: {
+        "50": "50px",
       },
       screens: {
         "800": "800px",

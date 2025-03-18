@@ -66,7 +66,7 @@ const SignInForm = () => {
           errors={errors}
           className="mb-4"
         />
-        <div className="flex justify-end items-center text-red10 font-semibold text-[14px]">
+        <div className="flex justify-end items-center text-red10 font-semibold text-[13px]">
           <Link href="/forgot-password">Forgot password ?</Link>
         </div>
 

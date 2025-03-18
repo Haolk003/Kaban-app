@@ -6,6 +6,7 @@ import { ApolloProvider } from "@apollo/client";
 import { ThemeProvider } from "./next-theme";
 
 import { ToastContainer } from "react-toastify";
+import AuthProvider from "./AuthProvider";
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -13,7 +14,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       <ApolloProvider client={graphqlClient}>
         <ThemeProvider>
           <ToastContainer />
-          {children}
+          <AuthProvider> {children}</AuthProvider>
         </ThemeProvider>
       </ApolloProvider>
     </>

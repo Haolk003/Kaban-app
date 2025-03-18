@@ -5,7 +5,7 @@ import { Provider } from "@/providers/Provider";
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // Các kiểu font bạn muốn sử dụng
+  weight: ["300", "400", "500", "600", "700"], // Các kiểu font bạn muốn sử dụng
   variable: "--font-poppins", // Tùy chọn: tạo biến CSS để sử dụng linh hoạt
 });
 
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>
+      <body className={`${poppins.className} antialiased`}>
         <Provider>{children}</Provider>
       </body>
     </html>

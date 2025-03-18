@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/libs/utils";
+import { cn } from "@/lib/utils";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 
 export const Avatar = React.forwardRef<

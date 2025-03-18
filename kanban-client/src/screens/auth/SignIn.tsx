@@ -13,11 +13,11 @@ const SignInScreen = () => {
   const router = useRouter();
 
   const handleLoginGoogle = async () => {
-    router.push("http://localhost:3001/auth/google");
+    router.push("http://localhost:4001/auth/google");
   };
 
   const handleLoginGithub = async () => {
-    router.push("http://localhost:3001/auth/github");
+    router.push("http://localhost:4001/auth/github");
   };
   return (
     <div className="flex w-screen h-screen">
@@ -25,17 +25,19 @@ const SignInScreen = () => {
         <div className="flex w-[400px]  justify-center gap-2 flex-col">
           <div className="flex  items-center gap-2">
             <Image src="/logo2.png" alt="" width={50} height={50} />
-            <h2 className="text-2xl font-bold">Taskaroo</h2>
+            <h2 className="text-[22px] font-semibold">Taskaroo</h2>
           </div>
-          <h3 className="text-2xl font-semibold">Sign In</h3>
-          <p className="text-gray10 text-[15px]">Welcome back !</p>
+          <h3 className="text-xl font-semibold">Sign In</h3>
+          <p className="text-gray10 text-[14px]">Welcome back !</p>
           <div className="flex items-center gap-4">
             <button
               onClick={handleLoginGoogle}
               className="flex items-center justify-center w-[200px] bg-gray12 rounded-md text-gray2 h-[40px] gap-3 mt-2"
             >
               <FcGoogle size={24} />
-              <span className="font-semibold">Sign In with Google</span>
+              <span className="font-[500] text-[13px] ">
+                Sign In with Google
+              </span>
             </button>
 
             <button
@@ -43,7 +45,9 @@ const SignInScreen = () => {
               className="flex items-center justify-center w-[200px] bg-gray12 rounded-md text-gray2 h-[40px] gap-3 mt-2"
             >
               <FaGithub size={24} />
-              <span className="font-semibold">Sign In with Github</span>
+              <span className="font-[500] text-[13px]">
+                Sign In with Github
+              </span>
             </button>
           </div>
           <div className="flex items-center gap-4 justify-center mt-5">

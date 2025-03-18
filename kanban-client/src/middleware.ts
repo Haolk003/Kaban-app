@@ -4,7 +4,7 @@ import { CHECK_AUTH_QUERY } from "./lib/graphql/actions/me.action";
 import { isEmpty } from "lodash";
 export async function middleware(req: NextRequest) {
   try {
-    const response = await fetch(`http://localhost:3001/graphql`, {
+    const response = await fetch(`http://localhost:4001/graphql`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,5 +36,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/auth/:path*"], // Áp dụng middleware cho các route
+  matcher: ["/", "/auth/:path*", "/setting"], // Áp dụng middleware cho các route
 };
