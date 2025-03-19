@@ -9,7 +9,13 @@ type AuthStore = {
     id: string;
     email: string;
     name: string;
-    imageUrl: string;
+    avatar: {
+      public_id?: string;
+      url: string;
+    };
+    bio?: string;
+    jobName?: string;
+    location?: string;
   };
   loading: boolean;
   error: null | string;

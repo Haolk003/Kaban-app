@@ -6,7 +6,10 @@ export type AuthState = {
     id: string;
     email: string;
     name: string;
-    avatar?: string;
+    avatar?: {
+      public_id?: string;
+      url?: string;
+    };
   };
 };
 

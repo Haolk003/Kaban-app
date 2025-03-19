@@ -6,6 +6,13 @@ export const CHECK_AUTH_QUERY: DocumentNode = gql`
       id
       email
       name
+      avatar {
+        url
+        public_id
+      }
+      bio
+      location
+      jobName
     }
   }
 `;
