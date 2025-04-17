@@ -12,7 +12,7 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation } from "@apollo/client";
 
-import { RESET_PASSWORD } from "@/lib/graphql/actions/resetPassword.action";
+import { RESET_PASSWORD } from "@/lib/graphql/actions/auth/resetPassword.action";
 import { showToast } from "../ui/Toast";
 import LoadingUI from "../ui/LoadingUI";
 

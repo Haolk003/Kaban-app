@@ -36,11 +36,13 @@ const SignUp = () => {
               className="flex items-center justify-center w-[200px] bg-gray12 rounded-md text-gray2 h-[40px] gap-3 mt-2"
             >
               <FcGoogle size={24} />
-              <span className="font-semibold">Sign Up with Google</span>
+              <span className="font-semibold text-[13px]">
+                Sign Up with Google
+              </span>
             </button>
             <button
               onClick={handleLoginGithub}
-              className="flex items-center justify-center w-[200px] bg-gray12 rounded-md text-gray2 h-[40px] gap-3 mt-2"
+              className="flex items-center justify-center w-[200px] bg-gray12 rounded-md text-gray2 h-[40px] gap-3 mt-2 text-[13px]"
             >
               <FaGithub size={24} />
               <span className="font-semibold">Sign Up with Github</span>

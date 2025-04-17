@@ -16,7 +16,7 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { useMutation } from "@apollo/client";
-import { UPDATE_PROFILE } from "@/lib/graphql/actions/updateProfile.action";
+import { UPDATE_PROFILE } from "@/lib/graphql/actions/auth/updateProfile.action";
 
 const PersonalContent = () => {
   const [updateProfile, { loading: loading2, data, error }] =

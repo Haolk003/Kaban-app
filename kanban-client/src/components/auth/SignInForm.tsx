@@ -11,7 +11,7 @@ import ButtonAuth from "../ui/ButtonAuth";
 import InputAuth from "../ui/InputAuth";
 import { SignInFormValue, signInSchema } from "@/validations/signInValidation";
 import { useMutation } from "@apollo/client";
-import { LOGIN } from "@/lib/graphql/actions/login.action";
+import { LOGIN } from "@/lib/graphql/actions/auth/login.action";
 import Link from "next/link";
 import LoadingUI from "../ui/LoadingUI";
 import { showToast } from "../ui/Toast";

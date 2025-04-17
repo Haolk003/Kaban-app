@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { print } from "graphql";
-import { CHECK_AUTH_QUERY } from "./lib/graphql/actions/me.action";
+import { CHECK_AUTH_QUERY } from "./lib/graphql/actions/auth/me.action";
 import { isEmpty } from "lodash";
 export async function middleware(req: NextRequest) {
   try {

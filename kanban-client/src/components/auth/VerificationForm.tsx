@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ButtonAuth from "../ui/ButtonAuth";
 import { useMutation } from "@apollo/client";
-import { VERIFY_USER } from "@/lib/graphql/actions/verifyUser.action";
+import { VERIFY_USER } from "@/lib/graphql/actions/auth/verifyUser.action";
 
 import { isEmpty } from "lodash";
 import { showToast } from "../ui/Toast";

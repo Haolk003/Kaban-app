@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { graphqlClient } from "@/lib/graphql/gql.setup";
-import { CHECK_AUTH_QUERY } from "@/lib/graphql/actions/me.action";
+import { CHECK_AUTH_QUERY } from "@/lib/graphql/actions/auth/me.action";
 
 type AuthStore = {
   user: null | {

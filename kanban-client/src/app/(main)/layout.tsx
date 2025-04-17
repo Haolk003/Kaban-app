@@ -1,4 +1,3 @@
-import BoardHeader from "@/components/board/BoardHeader";
 import React from "react";
 
 export default function MainLayout({
@@ -8,7 +7,6 @@ export default function MainLayout({
 }) {
   return (
     <div>
-      <BoardHeader />
       <div className="">{children}</div>
     </div>
   );

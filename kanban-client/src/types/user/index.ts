@@ -4,21 +4,24 @@ export type SafeUser = {
   id: string;
   email: string;
   name: string;
-  imageUrl?: string | null;
-  isVerified: boolean;
-  createdAt: string;
-  updatedAt: string;
+  avatar?: {
+    url: string;
+    public_id?: string;
+  };
+  jobName?: string;
+  location?: string;
+  bio?: string;
 };
 
 export type BoardMember = {
   userId: string;
   role: MemberRole;
-  user: Pick<SafeUser, "id" | "name" | "imageUrl">;
+  user: Pick<SafeUser, "id" | "name" | "avatar">;
 };
 
 export type UserProfile = Pick<
   SafeUser,
-  "id" | "name" | "email" | "imageUrl"
+  "id" | "name" | "email" | "avatar" | "jobName" | "location" | "bio"
 > & {
   totalBoards?: number | 0;
   totalTasks?: number | 0;

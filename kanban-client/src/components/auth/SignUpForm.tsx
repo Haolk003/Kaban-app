@@ -15,7 +15,7 @@ import ButtonAuth from "../ui/ButtonAuth";
 import Link from "next/link";
 
 import { useMutation } from "@apollo/client";
-import { REGISTER } from "@/lib/graphql/actions/register.action";
+import { REGISTER } from "@/lib/graphql/actions/auth/register.action";
 
 import LoadingUI from "../ui/LoadingUI";
 
