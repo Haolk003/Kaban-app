@@ -29,12 +29,13 @@ import {
 import { handleDragEnd, getColumnIdFromStatus } from "@/lib/drag-utils";
 import { KanbanCard } from "./KanbanCard";
 
-import { useQuery } from "@apollo/client";
-import { GET_BOARDS } from "@/lib/graphql/actions/board/getBoards.action";
 import { BoardSelector } from "./BoardSelector";
+import { useAuthStore } from "@/store/userStore";
+import { AddMemberModal } from "./AddMemberModal";
 
 export function KanbanBoard() {
-  const { data, loading, refetch } = useQuery(GET_BOARDS);
+  const { user } = useAuthStore();
+
   const [tasks, setTasks] = useState<KanbanTask[]>(generateMockTasks());
   const [boards, setBoards] = useState<{ id: string; title: string }[]>([]);
   const [selectedBoard, setSelectedBoard] = useState<string | undefined>(
@@ -63,15 +64,20 @@ export function KanbanBoard() {
     : null;
 
   const handleAddBoard = () => {
-    refetch();
+    // Logic to add a new board
+    console.log("Add Board clicked");
   };
 
   useEffect(() => {
-    if (data && data?.getBoardsByUserId && data?.getBoardsByUserId.length > 0) {
-      setBoards(data.getBoardsByUserId);
-      console.log(data);
+    if (user && user.boardMembers && user.boardMembers.length > 0) {
+      const boardData = user.boardMembers.map((board) => ({
+        id: board.board.id,
+        title: board.board.title,
+      }));
+      console.log(boardData);
+      setBoards(boardData);
     }
-  }, [data, loading]);
+  }, [user]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -228,6 +234,7 @@ export function KanbanBoard() {
               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-500 text-white text-xs font-medium border-2 border-background">
                 +8
               </div>
+              <AddMemberModal boardId="1232" />
             </div>
 
             <div className="flex items-center gap-2 ml-4">

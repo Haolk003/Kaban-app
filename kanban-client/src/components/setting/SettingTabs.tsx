@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Tabs, Avatar } from "radix-ui";
+import { Tabs } from "radix-ui";
 import PersonalContent from "./PersonalContent";
 
 const SettingTabs = () => {

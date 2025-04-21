@@ -16,6 +16,13 @@ type AuthStore = {
     bio?: string;
     jobName?: string;
     location?: string;
+    boardMembers?: {
+      id: string;
+      board: {
+        id: string;
+        title: string;
+      };
+    }[];
   };
   loading: boolean;
   error: null | string;

@@ -13,6 +13,13 @@ export const CHECK_AUTH_QUERY: DocumentNode = gql`
       bio
       location
       jobName
+      boardMembers {
+        id
+        board {
+          id
+          title
+        }
+      }
     }
   }
 `;
