@@ -1,19 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  FiMenu,
-  FiSearch,
-  FiMoon,
-  FiShoppingCart,
-  FiBell,
-  FiGrid,
-  FiMaximize,
-  FiSettings,
-} from "react-icons/fi";
+
 import { KanbanColumn } from "./KanbanColumn";
 import type { KanbanTask } from "@/types/kanban";
 import { generateMockTasks } from "@/lib/mock-data";
@@ -29,18 +21,12 @@ import {
 import { handleDragEnd, getColumnIdFromStatus } from "@/lib/drag-utils";
 import { KanbanCard } from "./KanbanCard";
 
-import { BoardSelector } from "./BoardSelector";
-import { useAuthStore } from "@/store/userStore";
 import { AddMemberModal } from "./AddMemberModal";
+import BoardNavbar from "./BoardNavbar";
 
-export function KanbanBoard() {
-  const { user } = useAuthStore();
-
+export function KanbanBoard({ boardId }: { boardId: string }) {
   const [tasks, setTasks] = useState<KanbanTask[]>(generateMockTasks());
-  const [boards, setBoards] = useState<{ id: string; title: string }[]>([]);
-  const [selectedBoard, setSelectedBoard] = useState<string | undefined>(
-    boards[0]?.id
-  );
+
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const newTasks = tasks.filter((task) => task.status === "new");
@@ -63,127 +49,9 @@ export function KanbanBoard() {
     ? tasks.find((task) => task.id === activeId)
     : null;
 
-  const handleAddBoard = () => {
-    // Logic to add a new board
-    console.log("Add Board clicked");
-  };
-
-  useEffect(() => {
-    if (user && user.boardMembers && user.boardMembers.length > 0) {
-      const boardData = user.boardMembers.map((board) => ({
-        id: board.board.id,
-        title: board.board.title,
-      }));
-      console.log(boardData);
-      setBoards(boardData);
-    }
-  }, [user]);
-
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="border-b">
-        <div className="flex items-center justify-between h-16 px-4">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon">
-              <FiMenu className="h-5 w-5" />
-            </Button>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="space-y-4">
-              <BoardSelector
-                boards={boards}
-                selectedBoard={selectedBoard}
-                onSelectBoard={setSelectedBoard}
-                className="w-full"
-                onAddBoard={handleAddBoard}
-              />
-
-              {/* {selectedBoard && (
-                <div className="p-4 border rounded-md mt-4">
-                  <h2 className="font-medium">
-                    Selected Board:{" "}
-                    {boards.find((b) => b.id === selectedBoard)?.name}
-                  </h2>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Board ID: {selectedBoard}
-                  </p>
-                </div>
-              )} */}
-            </div>
-            {/* <Select>
-              <SelectTrigger className="w-[180px] h-9">
-                <SelectValue placeholder="All Boards" />
-              </SelectTrigger>
-              <SelectContent className="w-[180px]">
-                <SelectItem value="all">All Boards</SelectItem>
-                {boards.map((board: any) => (
-                  <SelectItem key={board.id} value={board.id}>
-                    {board.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select> */}
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon">
-              <FiSearch className="h-5 w-5" />
-            </Button>
-
-            <div className="flex items-center gap-1 px-2 py-1 border rounded-md">
-              <Avatar className="h-5 w-5">
-                <AvatarImage src="/placeholder.svg" alt="US" />
-                <AvatarFallback>US</AvatarFallback>
-              </Avatar>
-              <span className="text-sm font-medium">EN</span>
-            </div>
-
-            <Button variant="ghost" size="icon">
-              <FiMoon className="h-5 w-5" />
-            </Button>
-
-            <div className="relative">
-              <Button variant="ghost" size="icon">
-                <FiShoppingCart className="h-5 w-5" />
-              </Button>
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-purple-500 text-[10px] font-medium text-white">
-                5
-              </span>
-            </div>
-
-            <div className="relative">
-              <Button variant="ghost" size="icon">
-                <FiBell className="h-5 w-5" />
-              </Button>
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 text-[10px] font-medium text-white">
-                8
-              </span>
-            </div>
-
-            <Button variant="ghost" size="icon">
-              <FiGrid className="h-5 w-5" />
-            </Button>
-
-            <Button variant="ghost" size="icon">
-              <FiMaximize className="h-5 w-5" />
-            </Button>
-
-            <div className="flex items-center gap-2">
-              <Avatar>
-                <AvatarImage src="/placeholder.svg" alt="Jason Taylor" />
-                <AvatarFallback>JT</AvatarFallback>
-              </Avatar>
-              <div className="hidden md:block">
-                <p className="text-sm font-medium">Jason Taylor</p>
-                <p className="text-xs text-muted-foreground">Web Designer</p>
-              </div>
-            </div>
-
-            <Button variant="ghost" size="icon">
-              <FiSettings className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-      </header>
+      <BoardNavbar boardId={boardId} />
 
       <div className="flex flex-col p-6 gap-6">
         <div className="flex items-center justify-between">

@@ -5,8 +5,17 @@ export const GET_BOARDS: DocumentNode = gql`
     getBoardsByUserId {
       id
       title
-      description
       projectKey
+      color
+      createdAt
+      updatedAt
+      tasksCount {
+        total
+        completed
+      }
+      membersCount
+      status
+      isOwner
     }
   }
 `;

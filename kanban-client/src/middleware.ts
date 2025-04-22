@@ -17,8 +17,6 @@ export async function middleware(req: NextRequest) {
 
     const { data } = await response.json();
 
-    console.log(data);
-
     const isAuthenticated = !isEmpty(data);
 
     const isAuthPage = req.nextUrl.pathname.startsWith("/auth");
@@ -27,7 +25,7 @@ export async function middleware(req: NextRequest) {
     }
 
     if (isAuthenticated && isAuthPage) {
-      return NextResponse.redirect(new URL("/", req.url));
+      return NextResponse.redirect(new URL("/boards", req.url));
     }
     return NextResponse.next();
   } catch {
@@ -36,5 +34,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/auth/:path*", "/setting"], // Áp dụng middleware cho các route
+  matcher: ["/", "/auth/:path*", "/setting", "/boards", "/board/:path*"], // Áp dụng middleware cho các route
 };

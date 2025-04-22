@@ -72,7 +72,7 @@ export function AddMemberModal({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      role: "member",
+      role: "MEMBER",
     },
   });
 
