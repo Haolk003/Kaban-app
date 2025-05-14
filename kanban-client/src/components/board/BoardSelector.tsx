@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown, Plus } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ interface BoardSelectorProps {
   boards: Board[];
   selectedBoard?: string;
   onSelectBoard: (boardId: string) => void;
-  onAddBoard?: (title: string, description: string) => void;
+  onAddBoard?: () => void;
   className?: string;
 }
 

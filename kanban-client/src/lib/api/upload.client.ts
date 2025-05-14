@@ -5,7 +5,7 @@ export async function uploadAvatar(
   formData.append("file", file);
   formData.append("folder", "avatar");
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_AUTH_URL}/api/upload`, {
     method: "POST",
     body: formData,
   });

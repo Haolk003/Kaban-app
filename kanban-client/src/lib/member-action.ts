@@ -36,7 +36,7 @@ export async function searchUserByEmail(email: string): Promise<User | null> {
 export async function addMemberToBoard(
   boardId: string,
   userId: string,
-  role: Role
+  role: string
 ): Promise<{ success: boolean; message: string }> {
   // This would be replaced with your actual database operation
   // For demo purposes, we'll simulate a delay and return success

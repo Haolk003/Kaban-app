@@ -10,6 +10,7 @@ import {
 } from "react-icons/fi";
 import type { KanbanTask } from "@/types/kanban";
 import { useDraggable } from "@dnd-kit/core";
+import {format, differenceInDays } from "date-fns"
 
 interface KanbanCardProps {
   task: KanbanTask;
@@ -77,26 +78,27 @@ export function KanbanCard({ task, isDragging = false }: KanbanCardProps) {
                     clipRule="evenodd"
                   ></path>
                 </svg>
-                Created - {task.createdDate}
+                Created - {format(new Date(task.createdAt), "dd MMM yyyy")}
               </span>
             </div>
-            <div className="text-xs text-muted-foreground">
-              {task.daysLeft} days left
-            </div>
+            {task.dueDate && (<div className="text-xs text-muted-foreground">
+              {differenceInDays(new Date(task.dueDate),new Date())} days left
+            </div>)}
+
           </div>
 
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-muted-foreground">
-                #{task.id}
+                #{task.taskId}
               </span>
               <div className="flex flex-wrap gap-1">
                 {task.labels.map((label, index) => (
                   <Badge
                     key={index}
-                    className={`text-[9px] font-medium ${getLabelColor(label)}`}
+                    className={`text-[9px] font-medium ${getLabelColor(label.name)}`}
                   >
-                    {label}
+                    {label.name}
                   </Badge>
                 ))}
               </div>
@@ -111,15 +113,15 @@ export function KanbanCard({ task, isDragging = false }: KanbanCardProps) {
             {task.description}
           </p>
 
-          {task.image && (
-            <div className="mb-4">
-              <img
-                src={task.image || "/placeholder.svg"}
-                alt={task.title}
-                className="w-full h-auto rounded-md object-cover"
-              />
-            </div>
-          )}
+          {/*{task.image && (*/}
+          {/*  <div className="mb-4">*/}
+          {/*    <img*/}
+          {/*      src={task.image || "/placeholder.svg"}*/}
+          {/*      alt={task.title}*/}
+          {/*      className="w-full h-auto rounded-md object-cover"*/}
+          {/*    />*/}
+          {/*  </div>*/}
+          {/*)}*/}
         </CardContent>
 
         <CardFooter className=" flex items-center justify-between gap-2">
@@ -128,30 +130,30 @@ export function KanbanCard({ task, isDragging = false }: KanbanCardProps) {
               <Button variant="ghost" size="icon" className="h-6 w-6">
                 <FiThumbsUp className="h-4 w-4" />
               </Button>
-              <span className="text-sm">{task.likes}</span>
+              <span className="text-sm">{task.counts.likes}</span>
             </div>
             <div className="flex items-center ">
               <Button variant="ghost" size="icon" className="h-4 w-4">
                 <FiMessageSquare className="h-4 w-4" />
               </Button>
-              <span className="text-sm">{task.comments}</span>
+              <span className="text-sm">{task.counts.discussion}</span>
             </div>
           </div>
 
           <div className="flex space-x-1">
-            {task.assignees.map((assignee, index) => (
+            {task.assignedTo.map((assignee, index) => (
               <Avatar key={index} className="border-2 border-background">
                 <AvatarImage
-                  src={`/placeholder.svg?${assignee}`}
+                  src={assignee.user?.avatar?.url|| "/placeholder.svg"}
                   alt={`User ${assignee}`}
                 />
-                <AvatarFallback className="text-xs">U{assignee}</AvatarFallback>
+                <AvatarFallback className="text-xs">{assignee.user.name}</AvatarFallback>
               </Avatar>
             ))}
           </div>
         </CardFooter>
 
-        {task.status === "completed" && (
+        {task.title === "Done" && (
           <div className="absolute top-2 right-2">
             <Badge className="bg-green-100 text-green-800">
               <FiCheck className="h-3 w-3 mr-1" />
@@ -160,13 +162,13 @@ export function KanbanCard({ task, isDragging = false }: KanbanCardProps) {
           </div>
         )}
 
-        {task.hasMore && (
-          <div className="px-4 pb-4">
-            <Button variant="secondary" className="w-full text-sm">
-              View More
-            </Button>
-          </div>
-        )}
+        {/*{task.hasMore && (*/}
+        {/*  <div className="px-4 pb-4">*/}
+        {/*    <Button variant="secondary" className="w-full text-sm">*/}
+        {/*      View More*/}
+        {/*    </Button>*/}
+        {/*  </div>*/}
+        {/*)}*/}
       </Card>
     </div>
   );

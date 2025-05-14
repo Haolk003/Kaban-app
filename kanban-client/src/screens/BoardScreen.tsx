@@ -7,7 +7,7 @@ interface BoardScreenProps {
 const BoardScreen = ({ id }: BoardScreenProps) => {
   return (
     <main className="min-h-screen bg-background">
-      <KanbanBoard boardId={id} />
+      <KanbanBoard  />
     </main>
   );
 };

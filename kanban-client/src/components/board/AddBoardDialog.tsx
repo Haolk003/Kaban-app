@@ -20,7 +20,7 @@ import LoadingUI from "../ui/LoadingUI";
 import { showToast } from "../ui/Toast";
 
 interface AddBoardDialogProps {
-  onAddBoard?: (title: string, description: string) => void;
+  onAddBoard?: () => void;
   trigger?: React.ReactNode;
 }
 
@@ -30,10 +30,10 @@ export function AddBoardDialog({ onAddBoard, trigger }: AddBoardDialogProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (title.trim()) {
-      newBoardAction({
+      await newBoardAction({
         variables: {
           title,
           description,
@@ -49,13 +49,13 @@ export function AddBoardDialog({ onAddBoard, trigger }: AddBoardDialogProps) {
       setTitle("");
       setDescription("");
       if (onAddBoard) {
-        onAddBoard(data.newBoard.title, data.newBoard.description);
+        onAddBoard();
       }
     }
     if (error) {
       console.log(error);
     }
-  }, [loading, data, error]);
+  }, [ data, error]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

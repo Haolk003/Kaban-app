@@ -39,13 +39,13 @@ const SignInForm = () => {
 
   useEffect(() => {
     if (data && data.login && !data.login.error) {
-      router.push("/");
-      console.log("Login Success");
+      router.push("/boards");
+    
     }
     if (error) {
       showToast("error", error.message);
     }
-  }, [error, data]);
+  }, [error, data, router]);
   return (
     <div>
       <Form.Root
@@ -67,7 +67,7 @@ const SignInForm = () => {
           className="mb-4"
         />
         <div className="flex justify-end items-center text-red10 font-semibold text-[13px]">
-          <Link href="/forgot-password">Forgot password ?</Link>
+          <Link href="/auth/forgot-password">Forgot password ?</Link>
         </div>
 
         <div className="mt-2">
@@ -77,7 +77,7 @@ const SignInForm = () => {
 
       <p className="text-center mt-5 text-[13px]">
         Don&apos;t have an account?{" "}
-        <Link href="/sign-up" className="text-iris8">
+        <Link href="/auth/sign-up" className="text-iris8">
           Sign Up
         </Link>{" "}
       </p>

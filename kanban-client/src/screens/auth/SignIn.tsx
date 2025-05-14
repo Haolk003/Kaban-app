@@ -13,11 +13,11 @@ const SignInScreen = () => {
   const router = useRouter();
 
   const handleLoginGoogle = async () => {
-    router.push("http://localhost:4001/auth/google");
+    router.push("http://localhost:4001/api/auth/google");
   };
 
   const handleLoginGithub = async () => {
-    router.push("http://localhost:4001/auth/github");
+    router.push("http://localhost:4001/api/auth/github");
   };
   return (
     <div className="flex w-screen h-screen">

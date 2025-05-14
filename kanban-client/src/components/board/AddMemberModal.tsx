@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -32,8 +32,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { addMemberToBoard } from "@/lib/member-action";
+
 import { FIND_USER_BY_EMAIL } from "@/lib/graphql/actions/auth/findUserByEmail.action";
+import {ADD_MEMBER_TO_BOARD} from "@/lib/graphql/actions/board/addMemberToBoard.action";
 import { useMutation } from "@apollo/client";
 
 const formSchema = z.object({
@@ -59,8 +60,14 @@ export function AddMemberModal({
   boardId,
   onMemberAdded,
 }: AddMemberModalProps) {
+
   const [findUserByEmail, { data: userData, error: errorSearchUser }] =
     useMutation(FIND_USER_BY_EMAIL);
+
+  const [addMemberToBoardAction,{data:addMemberData,error:errorAddMember,loading:loadingAddMeber}]=useMutation(ADD_MEMBER_TO_BOARD);
+
+
+
   const [open, setOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
@@ -91,32 +98,29 @@ export function AddMemberModal({
       setError("Please search for a valid user first");
       return;
     }
-
     setIsAdding(true);
     setError(null);
     setSuccess(null);
 
-    try {
-      const result = await addMemberToBoard(boardId, foundUser.id, values.role);
-      if (result.success) {
-        setSuccess(result.message);
-        setTimeout(() => {
-          setOpen(false);
-          if (onMemberAdded) onMemberAdded();
-          // Reset form
-          form.reset();
-          setFoundUser(null);
-          setSuccess(null);
-        }, 1500);
-      } else {
-        setError(result.message);
-      }
-    } catch (err) {
-      setError("An error occurred while adding the member");
-    } finally {
-      setIsAdding(false);
-    }
+    await addMemberToBoardAction({variables:{boardId: boardId,userId:foundUser.id,role:values.role}});
   };
+
+  useEffect(() => {
+    if(addMemberData && addMemberData.addMemberToBoard){
+      setSuccess("Add member to board");
+      setTimeout(() => {
+        setOpen(false);
+        if (onMemberAdded) onMemberAdded();
+        // Reset form
+        form.reset();
+        setFoundUser(null);
+        setSuccess(null);
+      }, 1500);
+    }
+    if(errorAddMember){
+      setError("An error occurred while adding the member");
+    }
+  }, [addMemberData, errorAddMember, form, onMemberAdded]);
 
   useEffect(() => {
     if (userData && userData.findUserByEmail) {
@@ -127,7 +131,7 @@ export function AddMemberModal({
       setIsSearching(false);
       setError("No user found with this email");
     }
-  }, [userData]);
+  }, [errorSearchUser, userData]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -234,9 +238,9 @@ export function AddMemberModal({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="admin">Admin</SelectItem>
-                          <SelectItem value="member">Member</SelectItem>
-                          <SelectItem value="viewer">Viewer</SelectItem>
+                          <SelectItem value="ADMIN">Admin</SelectItem>
+                          <SelectItem value="MEMBER">Member</SelectItem>
+                          <SelectItem value="VIEWER">Viewer</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

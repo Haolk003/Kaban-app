@@ -12,9 +12,11 @@ import { BoardSearch } from "@/components/boards/BoardSearch";
 import { useQuery } from "@apollo/client";
 import { GET_BOARDS } from "@/lib/graphql/actions/board/getBoards.action";
 import LoadingUI from "@/components/ui/LoadingUI";
+import {AddBoardDialog} from "@/components/board/AddBoardDialog";
+import BoardsNavbar from "@/components/boards/BoardsNavbar";
 
 export default function DashboardPage() {
-  const { data: boardsData, loading } = useQuery(GET_BOARDS);
+  const { data: boardsData, loading,refetch } = useQuery(GET_BOARDS);
   const [boards, setBoards] = useState<Board[]>([]);
   const [filteredBoards, setFilteredBoards] = useState<Board[]>(boards);
   const [filter, setFilter] = useState("all");
@@ -32,10 +34,10 @@ export default function DashboardPage() {
       result = result.filter((board) => board.status === "DRAFT");
     } else if (filter === "my") {
       // In a real app, you would filter by the current user
-      result = result.filter((board) => board.isOwner === true);
+      result = result.filter((board) => board.isOwner);
     }
 
-    // Apply search query
+    // Apply search a query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter((board) =>
@@ -44,7 +46,11 @@ export default function DashboardPage() {
     }
 
     setFilteredBoards(result);
-  }, [filter, searchQuery]);
+  }, [boards, filter, searchQuery]);
+
+  const handleAddBoard=async ()=>{
+    await refetch()
+  }
 
   useEffect(() => {
     if (boardsData) {
@@ -63,14 +69,18 @@ export default function DashboardPage() {
   };
 
   return (
+      <div>
+        <BoardsNavbar />
     <div className="container mx-auto py-6 max-w-7xl">
+
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold tracking-tight">Boards</h1>
-          <Button className="gap-2">
+          <AddBoardDialog trigger={ <Button className="gap-2">
             <Plus className="h-4 w-4" />
             New Board
-          </Button>
+          </Button>} onAddBoard={handleAddBoard}/>
+
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
@@ -106,21 +116,24 @@ export default function DashboardPage() {
                 ? `No boards match your search "${searchQuery}". Try a different search term.`
                 : "You don't have any boards yet. Create your first board to get started."}
             </p>
-            <Button className="gap-2">
+            <AddBoardDialog trigger={ <Button className="gap-2">
               <Plus className="h-4 w-4" />
               Create New Board
-            </Button>
+            </Button>} onAddBoard={handleAddBoard}/>
+
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredBoards.map((board) => (
               <BoardCard key={board.id} board={board} />
             ))}
-            <CreateBoardCard />
+          <CreateBoardCard onAddBoard={handleAddBoard} />
+
           </div>
         )}
       </div>
       {loading && <LoadingUI />}
     </div>
+      </div>
   );
 }
