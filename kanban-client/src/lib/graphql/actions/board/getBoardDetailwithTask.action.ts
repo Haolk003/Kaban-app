@@ -8,6 +8,10 @@ export const GET_BOARD_DETAIL_WITH_TASK = gql`
       title
       description
       projectKey
+      labels{
+        name
+        id
+      }
       lists{
         id
         name

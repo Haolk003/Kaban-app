@@ -28,6 +28,8 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "graphql": "^16.11.0",
+    "kanban-client": "link:",
     "lodash": "^4.17.21",
     "lucide-react": "^0.487.0",
     "next": "15.1.7",

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {useParams} from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -48,6 +49,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {uploadAttachment} from '@/lib/api/upload-attachment.client'
+import LoadingUI from "@/components/ui/LoadingUI";
+
+import {ADD_LABEL} from "@/lib/graphql/actions/task/add-label.action";
 
 // Define the form schema with zod
 const taskFormSchema = z.object({
@@ -65,43 +69,37 @@ type TaskFormValues = z.infer<typeof taskFormSchema>;
 interface CreateTaskModalProps {
   listId:string
   open: boolean;
+  boardMembers:{user:{avatar:{url:string};id:string;name:string}}[]
   onOpenChange: (open: boolean) => void;
   onSubmit?: (data: TaskFormValues & { attachments: File[] }) => void;
+  tags:{id:string,name:string}[]
+  handleRefeshBoard?:()=>void
 }
 
 export function CreateTaskModal({
   listId,
   open,
   onOpenChange,
-  onSubmit,
+  boardMembers,
+  tags,
+    handleRefeshBoard
 }: CreateTaskModalProps) {
+  const {id:boardId}=useParams()
+  const [addLabel,{data:addLabelData,loading:loadingAddLabel,error:errorAddLabel}] = useMutation(ADD_LABEL)
   const [addTask,{data,loading,error}] = useMutation(ADD_TASK)
   // File attachments are handled separately from the form
   const [attachments, setAttachments] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Available tags for the tag selector
-  const [availableTags, setAvailableTags] = useState([
-    "urgent",
-    "bug",
-    "feature",
-    "enhancement",
-    "documentation",
-    "design",
-    "testing",
-  ]);
+  const [availableTags, setAvailableTags] = useState<{id:string,name:string}[]>(tags);
   const [tagInputValue, setTagInputValue] = useState("");
   const [tagPopoverOpen, setTagPopoverOpen] = useState(false);
+  const [loadingUploadFile,setLoadingUploadFile]=useState(false)
 
   // Add these state variables after the other state declarations
   const [assigneePopoverOpen, setAssigneePopoverOpen] = useState(false);
-  const [teamMembers] = useState([
-    { id: "john", name: "John Doe" },
-    { id: "jane", name: "Jane Smith" },
-    { id: "alex", name: "Alex Johnson" },
-    { id: "sarah", name: "Sarah Williams" },
-    { id: "mike", name: "Mike Brown" },
-  ]);
+
 
   // Initialize react-hook-form
   const form = useForm<TaskFormValues>({
@@ -151,13 +149,8 @@ export function CreateTaskModal({
     setTagPopoverOpen(false);
   };
 
-  const handleCreateTag = () => {
-    if (tagInputValue && !availableTags.includes(tagInputValue)) {
-      // Add to available tags
-      setAvailableTags((prev) => [...prev, tagInputValue]);
-      // Select the new tag
-      handleSelectTag(tagInputValue);
-    }
+  const handleCreateTag = async () => {
+      await addLabel({variables:{boardId,name:tagInputValue}})
   };
 
   const removeTag = (tag: string) => {
@@ -170,23 +163,29 @@ export function CreateTaskModal({
   };
 
   // Form submission
-  const handleSubmit =async (data: { name: string; assignedTo: string[]; tags: string[]; priority: "low" | "medium" | "high"; description?: string | undefined; targetDate?: Date | undefined; } & { attachments: File[]; }) => {
-    const res=await uploadAttachment(attachments);
-      if(res){
-        await addTask({variables:{listId,title:data.name,description:data.description,priority:"medium"}})
-      }
+  const handleSubmit =async (data: { name: string; assignedTo: string[]; tags: string[]; priority: "low" | "medium" | "high"; description?: string | undefined; targetDate?: Date | undefined; } ) => {
+    setLoadingUploadFile(true);
 
-    if (onSubmit) {
+    let res:any
 
-      onSubmit({
-        ...data,
-        attachments,
-        name: "",
-        assignedTo: [],
-        tags: [],
-        priority: "low",
-      });
+    if(attachments.length>0){
+       res=await uploadAttachment(attachments);
     }
+
+    await addTask({variables:{listId,title:data.name,description:data.description,priority:data.priority,labelIds:data.tags,assignedTo:data.assignedTo,dueDate:data.targetDate,attachments:res}})
+
+
+    // if (onSubmit) {
+    //
+    //   onSubmit({
+    //     ...data,
+    //     attachments,
+    //     name: "",
+    //     assignedTo: [],
+    //     tags: [],
+    //     priority: "low",
+    //   });
+    // }
 
     // Reset form
     form.reset();
@@ -197,10 +196,23 @@ export function CreateTaskModal({
 
   useEffect(() => {
     if(data && data.createTask){
-      console.log(data);
+      setLoadingUploadFile(false)
+      if (handleRefeshBoard) {
+        handleRefeshBoard()
+      }
     }
 
   }, [data,error]);
+
+
+useEffect(()=>{
+  if(addLabelData && addLabelData.createLabel){
+    setAvailableTags((prev) => [...prev, addLabelData.createLabel])
+    setTagInputValue("")
+  }
+},[addLabelData,errorAddLabel])
+
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
@@ -325,18 +337,18 @@ export function CreateTaskModal({
                         <CommandList>
                           <CommandEmpty>No team member found</CommandEmpty>
                           <CommandGroup>
-                            {teamMembers.map((member) => (
+                            {boardMembers.map((member) => (
                               <CommandItem
-                                key={member.id}
-                                value={member.id}
+                                key={member.user.id}
+                                value={member.user.id}
                                 onSelect={() => {
                                   const currentAssignees = field.value || [];
                                   const newAssignees =
-                                    currentAssignees.includes(member.id)
+                                    currentAssignees.includes(member.user.id)
                                       ? currentAssignees.filter(
-                                          (id) => id !== member.id
+                                          (id) => id !== member.user.id
                                         )
-                                      : [...currentAssignees, member.id];
+                                      : [...currentAssignees, member.user.id];
 
                                   form.setValue("assignedTo", newAssignees, {
                                     shouldValidate: true,
@@ -346,12 +358,12 @@ export function CreateTaskModal({
                                 <Check
                                   className={cn(
                                     "mr-2 h-4 w-4",
-                                    field.value?.includes(member.id)
+                                    field.value?.includes(member.user.id)
                                       ? "opacity-100"
                                       : "opacity-0"
                                   )}
                                 />
-                                {member.name}
+                                {member.user.name}
                               </CommandItem>
                             ))}
                           </CommandGroup>
@@ -363,8 +375,8 @@ export function CreateTaskModal({
                   {field.value.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-2">
                       {field.value.map((memberId) => {
-                        const member = teamMembers.find(
-                          (m) => m.id === memberId
+                        const member = boardMembers.find(
+                          (m) => m.user.id === memberId
                         );
                         return (
                           <Badge
@@ -372,7 +384,7 @@ export function CreateTaskModal({
                             variant="secondary"
                             className="flex items-center gap-1"
                           >
-                            {member?.name || memberId}
+                            {member?.user.name || memberId}
                             <Button
                               type="button"
                               variant="ghost"
@@ -528,25 +540,25 @@ export function CreateTaskModal({
                             <CommandGroup>
                               {availableTags
                                 .filter((tag) =>
-                                  tag
+                                  tag.name
                                     .toLowerCase()
                                     .includes(tagInputValue.toLowerCase())
                                 )
                                 .map((tag) => (
                                   <CommandItem
-                                    key={tag}
-                                    value={tag}
-                                    onSelect={() => handleSelectTag(tag)}
+                                    key={tag.id}
+                                    value={tag.name}
+                                    onSelect={() => handleSelectTag(tag.id)}
                                   >
                                     <Check
                                       className={cn(
                                         "mr-2 h-4 w-4",
-                                        field.value.includes(tag)
+                                        field.value.includes(tag.id)
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}
                                     />
-                                    {tag}
+                                    {tag.name}
                                   </CommandItem>
                                 ))}
                             </CommandGroup>
@@ -563,7 +575,7 @@ export function CreateTaskModal({
                             variant="secondary"
                             className="flex items-center gap-1"
                           >
-                            {tag}
+                            {availableTags.find((t) => t.id === tag)?.name || tag}
                             <Button
                               type="button"
                               variant="ghost"
@@ -594,6 +606,7 @@ export function CreateTaskModal({
           </form>
         </Form>
       </DialogContent>
+      {(loading || loadingUploadFile ) && <LoadingUI />}
     </Dialog>
   );
 }

@@ -27,14 +27,16 @@ import {Tooltip,TooltipContent,TooltipTrigger} from '../ui/tooltip';
 
 import { useQuery } from "@apollo/client";
 import { GET_BOARD_DETAIL_WITH_TASK } from "@/lib/graphql/actions/board/getBoardDetailwithTask.action";
+import LoadingUI from "@/components/ui/LoadingUI";
 
 export function KanbanBoard() {
   const {id:boardId}:{id:string}=useParams();
-  const { data, loading, error } = useQuery(GET_BOARD_DETAIL_WITH_TASK, {
+  const { data, loading, error,refetch } = useQuery(GET_BOARD_DETAIL_WITH_TASK, {
     variables: { id: boardId },
   });
   const [tasks, setTasks] = useState<KanbanTask[]>([]);
   const [lists,setLists]=useState<KabanList[]>([]);
+  const [tags,setTags]=useState<{id:string,name:string}[]>([]);
   const [boardMembers, setBoardMembers] = useState<{user:{avatar:{url:string};id:string;name:string}}[]>([]);
 
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -59,10 +61,10 @@ export function KanbanBoard() {
     if (data && data.getBoardDetailById && !data.getBoardDetailById.error) {
       setBoardMembers(data.getBoardDetailById.member);
     setLists(data.getBoardDetailById.lists);
-      console.log(data.getBoardDetailById);
+      setTags(data.getBoardDetailById.labels)
       const { lists } = data.getBoardDetailById;
-      const allTasks = lists.flatMap(list =>
-        list.tasks.map(task => ({
+      const allTasks = lists.flatMap((list: { tasks: any[]; id: any; }) =>
+        list.tasks.map((task: any) => ({
           ...task,
           listId: list.id
 
@@ -154,11 +156,14 @@ export function KanbanBoard() {
               {lists.map((list) => (
                 // eslint-disable-next-line react/jsx-key
                 <KanbanColumn
+                    tags={tags}
+                    boardMembers={boardMembers}
                   key={list.id}
                   columnId={list.id }
                   count={list.tasks.length}
                   title={list.name}
                   tasks={list.tasks}
+                    handleRefeshBoard={()=>refetch()}
                 />
               ))}
             </div>
@@ -169,6 +174,7 @@ export function KanbanBoard() {
           </DragOverlay>
         </DndContext>
       </div>
+      {loading && <LoadingUI />}
     </div>
   );
 }

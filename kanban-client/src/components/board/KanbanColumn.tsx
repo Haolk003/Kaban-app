@@ -13,6 +13,9 @@ interface KanbanColumnProps {
   count: number;
   tasks: KanbanTask[];
   columnId: string;
+  tags:{id:string,name:string}[]
+  boardMembers:{user:{avatar:{url:string};id:string;name:string}}[]
+  handleRefeshBoard:()=>void
 }
 
 export function KanbanColumn({
@@ -20,6 +23,9 @@ export function KanbanColumn({
   count,
   tasks,
   columnId,
+    boardMembers,
+    tags,
+    handleRefeshBoard
 }: KanbanColumnProps) {
   const [isOpenAddTask,setIsOpenAddTask] = useState(false)
   const { setNodeRef, isOver } = useDroppable({
@@ -37,7 +43,7 @@ export function KanbanColumn({
           <span className="ml-1">Add Task</span>
         </Button>
       </div>
-      <CreateTaskModal open={isOpenAddTask} onOpenChange={(open)=>setIsOpenAddTask(open)} listId={columnId} />
+      <CreateTaskModal handleRefeshBoard={handleRefeshBoard} tags={tags} boardMembers={boardMembers} open={isOpenAddTask} onOpenChange={(open)=>setIsOpenAddTask(open)} listId={columnId} />
       <ScrollArea className="h-[calc(100vh-200px)]  ">
         <div
           ref={setNodeRef}
